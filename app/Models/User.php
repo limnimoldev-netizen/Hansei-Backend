@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-// We use Authenticatable instead of just Model for the User
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     * This tells Laravel it's okay to "fill" these columns.
-     */
     protected $fillable = [
         'first_name',
         'last_name',
+        'username',
         'gender',
         'email',
         'password',
@@ -26,19 +24,26 @@ class User extends Authenticatable
         'department_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     * This keeps your password secret when showing user data.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     /**
-     * The attributes that should be cast.
-     * This ensures the password is encrypted automatically.
+     * The accessors to append to the model's array form.
      */
+    protected $appends = ['full_name'];
+
+    /**
+     * Automatically combine First and Last name for the Sidebar.
+     */
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => "{$this->first_name} {$this->last_name}",
+        );
+    }
+
     protected function casts(): array
     {
         return [

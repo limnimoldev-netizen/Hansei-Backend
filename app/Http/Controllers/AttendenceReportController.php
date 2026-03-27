@@ -12,7 +12,7 @@ class AttendenceReportController extends Controller
      */
     public function index()
     {
-        //
+        return Attendence_Report::all();
     }
 
     /**

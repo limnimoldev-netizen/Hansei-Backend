@@ -12,7 +12,7 @@ class PersonalController extends Controller
      */
     public function index()
     {
-        //
+        return Personal::all();
     }
 
     /**

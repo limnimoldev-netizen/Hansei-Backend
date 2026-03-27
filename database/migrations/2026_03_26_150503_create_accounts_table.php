@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
+            $table->string('user_id')->unique(); // The ID they type to login (e.g., "HE-001")
+            $table->string('username');          // Their actual name (e.g., "Chan Samnang")
             $table->string('password');
             $table->timestamps();
         });

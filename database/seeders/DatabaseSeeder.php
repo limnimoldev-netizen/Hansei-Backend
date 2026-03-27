@@ -17,12 +17,24 @@ class DatabaseSeeder extends Seeder
         User::create([
             'first_name' => 'John',
             'last_name' => 'Doe',
+            'username' => 'xzidx_',
             'gender' => 'male',
             'email' => 'john@example.com',
             'password' => Hash::make('password123'), // Always encrypt passwords!
             'profile_picture' => 'https://example.com/photo.jpg',
             'position_id' => 1,
             'department_id' => 1,
+        ]);
+        User::create([
+            'first_name' => 'Chan',
+            'last_name' => 'Samnang',
+            'username' => 'lucky',
+            'gender' => 'male',
+            'email' => 'c.samnang.dev@gmail.com',
+            'password' => Hash::make('087884298'), // Always encrypt passwords!
+            'profile_picture' => 'https://example.com/photo.jpg',
+            'position_id' => 2,
+            'department_id' => 2,
         ]);
             
     }

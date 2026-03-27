@@ -12,7 +12,7 @@ class SalaryReportController extends Controller
      */
     public function index()
     {
-        //
+        return Salary_Report::all();
     }
 
     /**
