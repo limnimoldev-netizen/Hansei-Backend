@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendence__reports', function (Blueprint $table) {
+        Schema::create('attendence_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->decimal('week_hour', 8, 2)->default(0);
             $table->decimal('total_month_hour', 10, 2)->default(0);
             $table->decimal('overtimes', 8, 2)->default(0);
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendence__reports');
+        Schema::dropIfExists('attendence_reports');
     }
 };

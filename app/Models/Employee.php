@@ -1,29 +1,58 @@
 <?php
 
-namespace App\Models;
+namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Attendance;
+use Illuminate\Http\Request;
 
-class Employee extends Model
+class AttendanceController extends Controller
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'user_id', 
-        'phone_number', 
-        'status'
-    ];
-
-    // This tells Laravel: "An employee belongs to one User"
-    public function user()
+    public function store(Request $request)
     {
-        return $this->belongsTo(User::class);
-    }
+        $user = auth()->user(); // get logged-in user
+        if (!$user || !$user->employee) {
+            return response()->json([
+                'message' => 'Employee profile not found'
+            ], 400);
+        }
 
-    // Link to their many attendance records
-    public function attendances()
-    {
-        return $this->hasMany(Attendance::class);
+        $employee = $user->employee;
+
+        if ($request->type === 'in') {
+            $attendance = Attendance::create([
+                'employee_id' => $employee->id,
+                'check_in' => now()
+            ]);
+
+            return response()->json([
+                'message' => 'Checked in',
+                'data' => $attendance
+            ]);
+        }
+
+        if ($request->type === 'out') {
+            $attendance = Attendance::where('employee_id', $employee->id)
+                ->whereNull('check_out')
+                ->latest()
+                ->first();
+
+            if (!$attendance) {
+                return response()->json([
+                    'message' => 'No active session to check out'
+                ], 400);
+            }
+
+            $hours = now()->diffInMinutes($attendance->check_in) / 60;
+
+            $attendance->update([
+                'check_out' => now(),
+                'work_hour' => round($hours, 2)
+            ]);
+
+            return response()->json([
+                'message' => 'Checked out',
+                'data' => $attendance
+            ]);
+        }
     }
 }

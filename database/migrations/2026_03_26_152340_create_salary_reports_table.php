@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salary__reports', function (Blueprint $table) {
+        Schema::create('salary_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->foreignId('attendance_report_id')->nullable(); 
             $table->decimal('base_salary', 12, 2)->default(0.00);
             $table->decimal('overtime_pay', 12, 2)->default(0.00);
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salary__reports');
+        Schema::dropIfExists('salary_reports');
     }
 };

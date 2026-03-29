@@ -4,62 +4,69 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        // Use Sanctum auth for all attendance routes
+        $this->middleware('auth:sanctum');
+    }
+
     public function index()
     {
-        return Attendance::all();
+        // Only return attendances for the logged-in user
+        return Attendance::where('user_id', auth()->id())
+                         ->latest()
+                         ->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'type' => 'required|in:in,out'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Attendance $attendance)
-    {
-        //
-    }
+        $userId = auth()->id();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Attendance $attendance)
-    {
-        //
-    }
+        if ($request->type === 'in') {
+            $attendance = Attendance::create([
+                'user_id' => $userId,
+                'check_in' => Carbon::now(),
+                'check_out' => null,
+                'work_hour' => 0,
+                'reason' => null
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Attendance $attendance)
-    {
-        //
-    }
+            return response()->json([
+                'message' => 'Checked in successfully',
+                'data' => $attendance
+            ]);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Attendance $attendance)
-    {
-        //
+        if ($request->type === 'out') {
+            $attendance = Attendance::where('user_id', $userId)
+                                    ->whereNull('check_out')
+                                    ->latest()
+                                    ->first();
+
+            if (!$attendance) {
+                return response()->json(['message' => 'No active session found'], 404);
+            }
+
+            $checkOut = Carbon::now();
+            $hours = $attendance->check_in->diffInHours($checkOut);
+
+            $attendance->update([
+                'check_out' => $checkOut,
+                'work_hour' => $hours
+            ]);
+
+            return response()->json([
+                'message' => 'Checked out successfully',
+                'data' => $attendance
+            ]);
+        }
     }
 }

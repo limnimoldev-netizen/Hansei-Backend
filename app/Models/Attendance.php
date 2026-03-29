@@ -3,25 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Attendance extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'employee_id', 
-        'check_in', 
-        'check_out', 
-        'work_hour', 
-        'reason'
+        'user_id',
+        'check_in',
+        'check_out',
+        'work_hour',
+        'reason',
     ];
 
-    // This helps Laravel treat these as actual date objects
     protected $casts = [
         'check_in' => 'datetime',
         'check_out' => 'datetime',
     ];
 
-    public function employee()
-    {
-        return $this->belongsTo(Employee::class);
-    }
+    // Optional: if you want to always calculate work_hour automatically
+    // you can add an accessor here
 }

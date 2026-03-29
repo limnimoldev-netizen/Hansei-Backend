@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('attendances', function (Blueprint $table) {
            $table->id();
-           $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+           $table->foreignId('user_id')->constrained()->onDelete('cascade'); // link to users
            $table->timestamp('check_in')->nullable();
            $table->timestamp('check_out')->nullable();
            $table->decimal('work_hour', 5, 2)->default(0);
@@ -22,9 +19,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('attendances');

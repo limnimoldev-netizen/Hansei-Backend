@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Employee;
+use App\Models\Attendance;
+use App\Models\AttendenceReport;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
@@ -36,6 +38,27 @@ class DatabaseSeeder extends Seeder
             'position_id' => 2,
             'department_id' => 2,
         ]);
-            
+        User::create([
+            'first_name' => 'Chan1',
+            'last_name' => 'Samnang1',
+            'username' => 'Nang',
+            'gender' => 'male',
+            'email' => 'c.samnang.43dev@gmail.com',
+            'password' => Hash::make('087884298'), // Always encrypt passwords!
+            'profile_picture' => 'https://example.com/photo.jpg',
+            'position_id' => 3,
+            'department_id' => 3,
+        ]);
+         AttendenceReport::create([
+           'week_hour' => 8,
+        ]);
+        AttendenceReport::create([
+           'week_hour' => 8,
+        ]);
+        AttendenceReport::create([
+           'week_hour' => 8,
+        ]);
+        
+      
     }
 }

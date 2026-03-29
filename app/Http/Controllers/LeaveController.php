@@ -4,62 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Models\Leave;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Leave::all();
+        return Leave::with('user')->orderBy('created_at', 'desc')->get();
+    }
+
+    // ... (store and show stay the same)
+
+    /**
+     * Update the leave status using ID.
+     */
+    public function update(Request $request, $id) 
+    {
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected'
+        ]);
+
+        $leave = Leave::find($id);
+
+        if (!$leave) {
+            return response()->json(['message' => 'Record not found'], 404);
+        }
+
+        $leave->update(['status' => $request->status]);
+
+        return response()->json([
+            'message' => 'Leave status updated to ' . $request->status,
+            'data'    => $leave
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Remove a leave record using ID.
      */
-    public function create()
+    public function destroy($id) 
     {
-        //
-    }
+        $leave = Leave::find($id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if (!$leave) {
+            return response()->json(['message' => 'Record already gone or not found'], 404);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Leave $leave)
-    {
-        //
-    }
+        $leave->delete();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Leave $leave)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Leave $leave)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Leave $leave)
-    {
-        //
+        return response()->json([
+            'message' => 'Leave record deleted successfully.'
+        ]);
     }
 }

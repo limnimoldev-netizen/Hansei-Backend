@@ -51,4 +51,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    /**
+ * Link User to their Employee record.
+ */
+public function employee()
+{
+    return $this->hasOne(Employee::class);
+}
+
 }
