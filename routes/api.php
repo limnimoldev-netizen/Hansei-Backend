@@ -59,3 +59,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/leaves/{leave}', [LeaveController::class, 'update']);
     Route::delete('/leaves/{leave}', [LeaveController::class, 'destroy']);
 });
+
